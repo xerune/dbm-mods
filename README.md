@@ -2,7 +2,7 @@
 
 | <img src="https://i.imgur.com/6t5z2Q6.png" width="16" height="16"> Downloader | <img src="https://i.imgur.com/tctsqRS.png" width="16" height="16"> Actions | <img src="https://i.imgur.com/ezqaGtk.png" width="16" height="16"> Events |
 |------|-------|-------|
-[Click me!](https://vxe3D.github.io/dbm-mods/Versions/download.html) | 42 | 0 |
+[Click me!](https://xerune.github.io/dbm-mods/Versions/download.html) | 42 | 0 |
 
 <h3><img src="https://i.imgur.com/tctsqRS.png" width="16" height="16"> Latest Actions</h3>
 
