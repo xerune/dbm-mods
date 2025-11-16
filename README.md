@@ -8,16 +8,17 @@
 
 | File | Version | Author | Created | Updated |
 |------|--------|-------|-----------|----------------|
+| [SQLite_DB.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSQLite_DB.js) | 3.6.4 | xerune | 18.09.2025 09:23 | 16.11.2025 18:27 |
 | [Store_member_data_list.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DStore_member_data_list.js) | 3.1.0 | Flapekk | 13.10.2025 21:51 | Awaiting update |
 | [store_channel_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_channel_info.js) | 1.1.0 | vxed_ | 28.09.2025 07:37 | 09.10.2025 19:49 |
 | [store_invite_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_invite_info.js) | 3.1.1 | vxed_ | 18.09.2025 14:44 | 09.10.2025 19:49 |
 | [store_message_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_message_info.js) | 3.2.0 | vxed_ | 28.09.2025 06:16 | 09.10.2025 19:49 |
-| [store_server_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_server_info.js) | 3.4.2 | vxed_ | 18.09.2025 09:36 | 09.10.2025 19:49 |
 
 <h3><img src="https://i.imgur.com/tctsqRS.png" width="16" height="16"> Other Actions</h3>
 
 | File | Version | Author | Created | Updated |
 |------|--------|-------|-----------|----------------|
+| [store_server_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_server_info.js) | 3.4.2 | vxed_ | 18.09.2025 09:36 | 09.10.2025 19:49 |
 | [store_thread_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_thread_info.js) | 1.0.1 | vxed_ | 28.09.2025 07:37 | 09.10.2025 19:49 |
 | [Copy_Emoji_To_Server.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DCopy_Emoji_To_Server.js) | 1.0.0 | vxed_ | 09.10.2025 12:16 | Awaiting update |
 | [Store_member_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DStore_member_info.js) | 3.4.0 | vxed_ | 07.10.2025 08:47 | Awaiting update |
@@ -31,7 +32,6 @@
 | [delete_bulk_messages.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Ddelete_bulk_messages.js) | 3.2.7 | vxed_ | 19.09.2025 19:23 | 20.09.2025 16:29 |
 | [store_time_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_time_info.js) | 3.1.0 | vxed_ | 19.09.2025 19:57 | Awaiting update |
 | [Send_Components_Webhook.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSend_Components_Webhook.js) | 2.1.0 | vxed_ | 19.09.2025 10:24 | 19.09.2025 19:23 |
-| [SQLite_DB.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSQLite_DB.js) | 3.6.3 | vxed_ | 18.09.2025 09:23 | 19.09.2025 19:21 |
 | [control_music_MOD.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dcontrol_music_MOD.js) | 3.4.0 | vxed_ | 18.09.2025 09:23 | 19.09.2025 14:54 |
 | [generate_random_word.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dgenerate_random_word.js) | 2.5.0 | vxed_ | 19.09.2025 14:54 | Awaiting update |
 | [send_components_v2_MOD.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dsend_components_v2_MOD.js) | 3.6.2 | vxed_ | 18.09.2025 09:23 | 19.09.2025 10:24 |
