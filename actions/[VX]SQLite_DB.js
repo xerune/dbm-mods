@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "3.6.4",
+        actionVersion: "3.7.0",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -619,10 +619,8 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
         let db = new sqlite3.Database(dbPath);
         let output;
 
-        // Safely quote SQL identifiers (table/column names) to allow special chars like hyphens
         function quoteId(name) {
             if (!name && name !== 0) return '""';
-            // Convert to string and escape any double quotes inside identifier
             const n = String(name);
             return '"' + n.replace(/"/g, '""') + '"';
         }
@@ -728,7 +726,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                                     console.error('[sqlite3] ALTER TABLE ERROR:', alterErr);
                                     reject(alterErr);
                                 } else {
-                                    // Retry insert
                                     db.run(sql, values, function(retryErr) {
                                         if (retryErr) {
                                             console.error('[sqlite3] RETRY INSERT ERROR:', retryErr);
@@ -830,7 +827,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         }
                     });
                 });
-                // Retry the original query after creating the table
                 return await new Promise((resolve, reject) => {
                     db.get(sql, values, (retryErr, row) => {
                         if (retryErr) {
@@ -842,16 +838,15 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     });
                 });
             }
-            throw err; // Re-throw if not a missing column or table error
+            throw err;
         }
 
-        // Wrap database operations to handle missing tables or columns dynamically
         try {
             if (dboperation === 'store') {
                 const getColumnRaw = this.evalMessage(data.getColumn, cache);
                 const getColumn = getColumnRaw && getColumnRaw.trim() !== '' ? getColumnRaw.trim() : null;
                 if (getColumn && conditionColumn && values.length > 0) {
-                    const sql = `SELECT ${getColumn} FROM "${tableName.replace('.sqlite','')}" WHERE ${conditionColumn}=?`;
+                    const sql = `SELECT ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                     output = await new Promise((resolve, reject) => {
                         db.get(sql, [values[0]], async (err, row) => {
                             if (err) {
@@ -903,7 +898,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         });
                         const colNames = columnsInfo.map(col => col.name);
                         if (!colNames.includes(getColumn)) {
-                            // Check for duplicate column name (case-insensitive)
                             if (!colNames.map(c => c.toLowerCase()).includes(getColumn.toLowerCase())) {
                                 const alterSQL = `ALTER TABLE \"${tableNoExt}\" ADD COLUMN \"${getColumn}\" TEXT`;
                                 await new Promise((resolve, reject) => {
@@ -915,7 +909,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                             }
                         }
                         if (!colNames.includes(conditionColumn)) {
-                            // Check for duplicate column name (case-insensitive)
                             if (!colNames.map(c => c.toLowerCase()).includes(conditionColumn.toLowerCase())) {
                                 const alterSQL = `ALTER TABLE \"${tableNoExt}\" ADD COLUMN \"${conditionColumn}\" TEXT`;
                                 await new Promise((resolve, reject) => {
@@ -926,8 +919,8 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                                 if (debugMode) console.log(`[sqlite3] CHECKVAR: Kolumna ${conditionColumn} już istnieje (duplikat)`);
                             }
                         }
-                        if (debugMode) console.log('[sqlite3] CHECKVAR SQL:', `SELECT ${getColumn} FROM "${tableNoExt}" WHERE ${conditionColumn}=?`, [conditionValue]);
-                        const sql = `SELECT ${getColumn} FROM "${tableNoExt}" WHERE ${conditionColumn}=?`;
+                        const sql = `SELECT ${quoteId(getColumn)} FROM "${tableNoExt}" WHERE ${quoteId(conditionColumn)}=?`;
+                        if (debugMode) console.log('[sqlite3] CHECKVAR SQL:', sql, [conditionValue]);
                         const row = await new Promise((resolve, reject) => {
                             db.get(sql, [conditionValue], (err, row) => {
                                 if (err) reject(err);
@@ -938,7 +931,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     } else {
                         val1 = undefined;
                     }
-                    // Check for missing data in val1 or val2
                     if ((val2 === undefined || val2 === null || val2 === '') && data.storage) {
                         const missingMsg = `[sqlite3] CHECKVAR: Brak danych w val2`;
                         if (debugMode) console.log(missingMsg, { val1, val2 });
@@ -1073,7 +1065,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                 if (debugMode) console.log('[sqlite3] OPERATION: count');
                     if (debugMode) console.log('[sqlite3] COUNT operation entered. countColumn:', countColumn);
                     if (countColumn && countColumn.trim() !== '') {
-                        const sql = `SELECT COUNT(*) as cnt FROM "${tableName.replace('.sqlite','')}" WHERE ${countColumn} IS NOT NULL AND ${countColumn} != ''`;
+                        const sql = `SELECT COUNT(*) as cnt FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(countColumn)} IS NOT NULL AND ${quoteId(countColumn)} != ''`;
                         if (debugMode) console.log('[sqlite3] COUNT SQL:', sql);
                         output = await new Promise((resolve, reject) => {
                             db.get(sql, [], (err, row) => {
@@ -1094,13 +1086,12 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
             // end count
             } else if (dboperation === 'countList') {
                 if (debugMode) console.log('[sqlite3] OPERATION: countList');
-                // Pobierz wartości z pól
                 const countListMatchColumn = this.evalMessage(data.countListMatchColumn, cache);
                 const countListCheckValue = this.evalMessage(data.countListCheckValue, cache);
                 const countListColumn = this.evalMessage(data.countListColumn, cache);
                 if (debugMode) console.log('[sqlite3] countList fields:', { countListMatchColumn, countListCheckValue, countListColumn });
                 if (countListMatchColumn && countListCheckValue && countListColumn) {
-                    const sql = `SELECT ${countListColumn} FROM "${tableName.replace('.sqlite','')}" WHERE ${countListMatchColumn} = ?`;
+                    const sql = `SELECT ${quoteId(countListColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(countListMatchColumn)} = ?`;
                     if (debugMode) console.log('[sqlite3] countList SQL:', sql);
                     const row = await new Promise((resolve, reject) => {
                         db.get(sql, [countListCheckValue], (err, row) => {
@@ -1114,7 +1105,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     });
                     let value = row && row[countListColumn] ? String(row[countListColumn]) : '';
                     if (debugMode) console.log('[sqlite3] countList value:', value);
-                    // Zlicz elementy po przecinku (jeśli nie pusta)
                     let count = 0;
                     if (value.trim() !== '') {
                         count = value.split(',').map(s => s.trim()).filter(Boolean).length;
@@ -1137,7 +1127,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
 
                 let nextValue = null;
                 if (conditionValue && typeof conditionValue === 'string' && conditionValue.trim() === '[next]') {
-                    const sql = `SELECT MAX(CAST(${conditionColumn} AS INTEGER)) as maxval FROM "${tableName.replace('.sqlite','')}"`;
+                    const sql = `SELECT MAX(CAST(${quoteId(conditionColumn)} AS INTEGER)) as maxval FROM "${tableName.replace('.sqlite','')}"`;
                     const row = await new Promise((resolve, reject) => {
                         db.get(sql, [], (err, row) => {
                             if (err) reject(err);
@@ -1149,14 +1139,12 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                 }
                 const effectiveConditionValue = nextValue !== null ? nextValue : conditionValue;
 
-                // ✅ DYNAMIC TABLE CREATION
                 await ensureTableExists(db, tableName, [...columns, conditionColumn]);
 
                 if (!conditionColumn || !effectiveConditionValue) {
-                    // No condition, INSERT
-                    if (columns.length > 0 && values.length > 0) {
-                        const placeholders = columns.map(() => '?').join(', ');
-                        const insertSql = `INSERT INTO "${tableName.replace('.sqlite','')}" (${columns.join(', ')}) VALUES (${placeholders})`;
+                        if (columns.length > 0 && values.length > 0) {
+                            const placeholders = columns.map(() => '?').join(', ');
+                        const insertSql = `INSERT INTO "${tableName.replace('.sqlite','')}" (${columns.map(c => quoteId(c)).join(', ')}) VALUES (${placeholders})`;
                         output = await insertWithAutoColumns(insertSql, values, columns, tableName.replace('.sqlite',''));
                         output = String(output);
                     } else {
@@ -1175,11 +1163,10 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         const tableNoExt = tableName.replace('.sqlite','');
                         const sql = `ALTER TABLE \`${tableNoExt}\` ADD COLUMN \`${column}\` TEXT DEFAULT '0'`;
                         return new Promise((resolve) => {
-                            db.run(sql, [], () => resolve()); // ignorujemy błąd, jeśli kolumna już istnieje
+                            db.run(sql, [], () => resolve());
                         });
                     }
 
-                    // Arithmetic / concat / append/remove check
                     for (let i = 0; i < columns.length; i++) {
                         const col = columns[i];
                         await ensureColumnExists(db, tableName, col);
@@ -1190,10 +1177,9 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         if (typeof val === 'string') {
                             val = val.trim();
 
-                            // ✅ Append mode (^+value)
                             if (val.startsWith('^+')) {
                                 const toAppend = val.slice(2);
-                                const sql = `SELECT ${col} FROM "${tableName.replace('.sqlite','')}" WHERE ${conditionColumn}=?`;
+                                const sql = `SELECT ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                                 const row = await new Promise((resolve, reject) => {
                                     db.get(sql, [effectiveConditionValue], (err, row) => err ? reject(err) : resolve(row));
                                 });
@@ -1203,10 +1189,9 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                                 if (debugMode) console.log(`[sqlite3][DEBUG] New value for "${col}":`, values[i]);
                             } 
 
-                            // ✅ Remove mode (^-value)
                             else if (val.startsWith('^-')) {
                                 const toRemove = val.slice(2);
-                                const sql = `SELECT ${col} FROM "${tableName.replace('.sqlite','')}" WHERE ${conditionColumn}=?`;
+                                const sql = `SELECT ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                                 const row = await new Promise((resolve, reject) => {
                                     db.get(sql, [effectiveConditionValue], (err, row) => err ? reject(err) : resolve(row));
                                 });
@@ -1223,9 +1208,8 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                                 }
                             }
 
-                            // ✅ Arithmetic mode (+/-number)
                             else if (/^[+-]\d+$/.test(val)) {
-                                const sql = `SELECT ${col} FROM "${tableName.replace('.sqlite','')}" WHERE ${conditionColumn}=?`;
+                                const sql = `SELECT ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                                 const row = await new Promise((resolve, reject) => {
                                     db.get(sql, [effectiveConditionValue], (err, row) => err ? reject(err) : resolve(row));
                                 });
@@ -1237,8 +1221,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         }
                     }
 
-                    // Check if record exists
-                    const checkSql = `SELECT COUNT(*) as cnt FROM "${tableName.replace('.sqlite','')}" WHERE ${conditionColumn}=?`;
+                    const checkSql = `SELECT COUNT(*) as cnt FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                     const checkExists = await new Promise((resolve, reject) => {
                         db.get(checkSql, [effectiveConditionValue], (err, row) => {
                             if (err) {
@@ -1252,7 +1235,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     });
 
                     if (!checkExists) {
-                        // INSERT fallback
                         let insertColumns = [...columns];
                         let insertValues = [...values];
                         if (!insertColumns.includes(conditionColumn)) {
@@ -1265,16 +1247,15 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         }
                         if (debugMode) console.log('[sqlite3] UPDATE: No record exists, will insert.', { insertColumns, insertValues });
                         const placeholders = insertColumns.map(() => '?').join(', ');
-                        const insertSql = `INSERT INTO "${tableName.replace('.sqlite','')}" (${insertColumns.join(', ')}) VALUES (${placeholders})`;
+                        const insertSql = `INSERT INTO "${tableName.replace('.sqlite','')}" (${insertColumns.map(c => quoteId(c)).join(', ')}) VALUES (${placeholders})`;
                         output = await insertWithAutoColumns(insertSql, insertValues, insertColumns, tableName.replace('.sqlite',''));
                     } else {
-                        // UPDATE existing record
-                        const setClause = columns.filter(col => col !== conditionColumn).map((col, i) => `${col}=?`).join(', ');
+                        const setClause = columns.filter(col => col !== conditionColumn).map((col, i) => `${quoteId(col)}=?`).join(', ');
                         const updateValues = columns.filter(col => col !== conditionColumn).map((col, i) => values[columns.indexOf(col)]);
                         updateValues.push(effectiveConditionValue);
                         if (debugMode) console.log('[sqlite3] UPDATE: Record exists, will update.', { setClause, updateValues });
                         output = String(output);
-                        const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${conditionColumn}=?`;
+                        const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${quoteId(conditionColumn)}=?`;
                         output = await updateWithAutoColumns(sql, updateValues, columns, tableName.replace('.sqlite',''));
                     }
                 } else {
@@ -1310,17 +1291,15 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                                             jsonTable[key][index + 1] = row[key];
                                         });
                                     });
-                                    // Convert the JSON table to a string for message usage
-                                    const jsonString = JSON.stringify(jsonTable, null, 2); // Pretty-print with 2 spaces
+                                    const jsonString = JSON.stringify(jsonTable, null, 2);
                                     resolve(jsonString);
                                 }
                             });
                         });
                     } else if (getColumn && conditionColumn && values.length > 0) {
 
-                        // Pobierz pierwszą kolumnę z columns
                         const columnToCheck = columns && columns.length > 0 ? columns[0] : null;
-                        const sql = `SELECT ${getColumn} FROM "${tableName.replace('.sqlite','')}" WHERE ${columnToCheck}=?`;
+                        const sql = `SELECT ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)}=?`;
                         output = await new Promise((resolve, reject) => {
                             db.get(sql, [values[0]], async (err, row) => {
                                 if (err) {
@@ -1338,7 +1317,6 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     } else if (getColumn && (!conditionColumn || values.length === 0)) {
                         if (debugMode) console.log('[sqlite3] STORE: getColumn only', { getColumn, value: values[0] });
 
-                        // Pobierz pierwszą kolumnę z columns
                         const columnToCheck = columns && columns.length > 0 ? columns[0] : null;
 
                         if (!columnToCheck) {
@@ -1349,7 +1327,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                             output = 'Brak danych';
                         } else {
                             const valueToCheck = String(values[0]).trim();
-                            const sql = `SELECT ${getColumn} FROM "${tableName.replace('.sqlite','')}" WHERE ${columnToCheck} = ? COLLATE BINARY`;
+                            const sql = `SELECT ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)} = ? COLLATE BINARY`;
 
                             if (debugMode) console.log(`[DEBUG] SQL: ${sql}, value: "${valueToCheck}"`);
 
@@ -1370,7 +1348,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         }
                     } else if (!getColumn && conditionColumn && values.length > 0) {
                         if (debugMode) console.log('[sqlite3] STORE: conditionColumn only', { conditionColumn, value: values[0] });
-                        const sql = `SELECT * FROM "${tableName.replace('.sqlite','')}" WHERE ${conditionColumn}=?`;
+                        const sql = `SELECT * FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                         output = await new Promise((resolve, reject) => {
                             db.get(sql, [values[0]], (err, row) => {
                                 if (err) {
@@ -1406,7 +1384,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     });
                     if (columnsToClear.length > 0 && columns.length === 0) {
                         if (debugMode) console.log('[sqlite3] DELETE: Clear all columns', { columnsToClear });
-                        const setClause = columnsToClear.map(col => `${col}=NULL`).join(', ');
+                        const setClause = columnsToClear.map(col => `${quoteId(col)}=NULL`).join(', ');
                         const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause}`;
                         output = await new Promise((resolve, reject) => {
                             db.run(sql, [], function(err) {
@@ -1420,10 +1398,10 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         });
                     } else if (columns.length > 0 && values.length > 0) {
                         if (debugMode) console.log('[sqlite3] DELETE: With where', { columns, values, columnsToClear });
-                        const where = columns.map((col, i) => `${col}=?`).join(' AND ');
+                        const where = columns.map((col, i) => `${quoteId(col)}=?`).join(' AND ');
                         if (columnsToClear.length > 0) {
                             if (debugMode) console.log('[sqlite3] DELETE: Update set NULL with where', { setClause, where });
-                            const setClause = columnsToClear.map(col => `${col}=NULL`).join(', ');
+                            const setClause = columnsToClear.map(col => `${quoteId(col)}=NULL`).join(', ');
                             const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${where}`;
                             output = await new Promise((resolve, reject) => {
                                 db.run(sql, values, function(err) {
@@ -1458,13 +1436,12 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                 const searchValue = this.evalMessage(data.searchValue, cache);
                 if (debugMode) console.log('[sqlite3] search fields:', { searchReturnColumn, searchListColumn, searchValue });
                 if (searchReturnColumn && searchListColumn && searchValue) {
-                    // Walidacja: nie pozwól na SELECT wartości, tylko kolumny!
                     const validCol = /^[a-zA-Z0-9_\-]+$/;
                     if (!validCol.test(searchReturnColumn) || !validCol.test(searchListColumn)) {
                         output = '[sqlite3] search: Invalid column name.';
                         if (debugMode) console.log('[sqlite3] search output:', output);
                     } else {
-                        const sql = `SELECT "${searchReturnColumn}", "${searchListColumn}" FROM "${tableName.replace('.sqlite','')}"`;
+                        const sql = `SELECT ${quoteId(searchReturnColumn)}, ${quoteId(searchListColumn)} FROM "${tableName.replace('.sqlite','')}"`;
                         if (debugMode) console.log('[sqlite3] search SQL:', sql);
                         const rows = await new Promise((resolve, reject) => {
                             db.all(sql, [], (err, rows) => {
