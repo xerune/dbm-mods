@@ -4,8 +4,8 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "3.6.3",
-        author: "vxed_",
+        actionVersion: "3.6.4",
+        author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
     },
@@ -47,8 +47,8 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
   window.__VX_ACTION_FILENAME = actionFilename;
     return `
         <div class="vcstatus-box-fixed vcstatus-box-left" style="top: 2px;">
-          <div class="vcstatus-author"><span class="vcstatus-author-label">Autor:</span> <span class="vcstatus-author-name">vxed_</span></div>
-          <a href="https://discord.gg/XggyjAMFmC" class="vcstatus-discord" target="_blank">Discord</a>
+          <div class="vcstatus-author"><span class="vcstatus-author-label">Autor:</span> <span class="vcstatus-author-name">Xerune</span></div>
+          <a href="#" id="vx-discord-link" class="vcstatus-discord">Discord</a>
         </div>
         <div class="vcstatus-box-fixed vcstatus-box-right" style="top: 22px; right: 15px;">
           <span class="vcstatus-version">v${actionVersion}</span>
@@ -64,7 +64,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
           :root {
             --vcstatus-box-width: 64px;
             --vcstatus-box-height: 28px;
-            --vcstatus-box-left-width: 100px;
+            --vcstatus-box-left-width: 110px;
             --vcstatus-box-left-height: 58px;
             --vcstatus-author-font-size: 14px;
             --vcstatus-discord-font-size: 14px;
@@ -72,7 +72,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
             --vcstatus-discord-margin-top: -2px;
             --vcstatus-box-left-offset: 16px;
             --vcstatus-author-margin-left: 2px;
-            --vcstatus-discord-margin-left: 5px;
+            --vcstatus-discord-margin-left: 10px;
           }
           .vcstatus-box-fixed {position:fixed;top:2px;z-index:9999;padding:5px 8px;border-radius:10px;font-size:14px;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,0.10);border:1px solid #23272a;background:linear-gradient(90deg,#23243a 0%,#3a3b5a 100%);color:#fff;min-width:120px;max-width:320px;display:flex;flex-direction:column;margin-top:5px;align-items:flex-start;gap:4px;}
           .vcstatus-box-right {right:18px;justify-content:center;color:#ff4d4d;align-items:center;flex-direction:row;width:var(--vcstatus-box-width);min-width:var(--vcstatus-box-width);max-width:var(--vcstatus-box-width);padding:0;flex-shrink:0;font-size:16px;height:var(--vcstatus-box-height);margin-top:-0.5px;box-sizing:border-box;overflow:hidden;}
@@ -494,8 +494,9 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
     //////////////////////////////////////////////////
 
     preInit() {
-      const f = window.__VX_ACTION_FILENAME||"[VX]store_server_info.js", l = window.__VX_ACTION_VERSION||"0.0.0", c = (a,b) => {a=a.split('.').map(Number),b=b.split('.').map(Number);for(let i=0;i<Math.max(a.length,b.length);i++){let n1=a[i]||0,n2=b[i]||0;if(n1!==n2)return n1-n2;}return 0;}, githubUrl = `https://github.com/vxe3D/dbm-mods/blob/main/actions%2F${encodeURIComponent(f)}`;
-      fetch("https://github.com/vxe3D/dbm-mods/raw/main/Versions/versions.json").then(r=>r.json()).then(j=>{const v=j[f]?.version;if(v&&c(l,v)<0){document.getElementById("vx-version-warning").innerHTML="<button class='vcstatus-warning' id='vx-version-btn' type='button'>Masz nieaktualną wersję</button>";setTimeout(()=>{const b=document.getElementById('vx-version-btn');if(b)b.onclick=e=>{e.preventDefault();const u=githubUrl;if(window.require)try{window.require('electron').shell.openExternal(u);}catch{window.open(u,'_blank');}else window.open(u,'_blank');};},0);}});
+      const f = window.__VX_ACTION_FILENAME||"[VX]store_server_info.js", l = window.__VX_ACTION_VERSION||"0.0.0", c = (a,b) => {a=a.split('.').map(Number),b=b.split('.').map(Number);for(let i=0;i<Math.max(a.length,b.length);i++){let n1=a[i]||0,n2=b[i]||0;if(n1!==n2)return n1-n2;}return 0;}, githubUrl = `https://github.com/vxe3D/dbm-mods/blob/main/actions%2F${encodeURIComponent(f)}`, discordUrl = "https://discord.gg/XggyjAMFmC";
+      fetch("https://github.com/vxe3D/dbm-mods/raw/main/Versions/versions.json").then(r=>r.json()).then(j=>{const v=j[f]?.version;if(v&&c(l,v)<0){document.getElementById("vx-version-warning").innerHTML="<button class='vcstatus-warning' id='vx-version-btn' type='button'>Masz nieaktualną wersję</button>";setTimeout(()=>{const b=document.getElementById('vx-version-btn');if(b)b.onclick=e=>{e.preventDefault();const u=githubUrl;if(window.require)try{window.require('electron').shell.openExternal(u);}catch{window.open(u,'_blank');}else window.open(u,'_blank');};},0);}}); 
+      const dLink = document.querySelector(".vcstatus-discord"); if(dLink) dLink.onclick=e=>{e.preventDefault();if(window.require){try{window.require('electron').shell.openExternal(discordUrl);}catch{window.open(discordUrl,'_blank');}}else window.open(discordUrl,'_blank');};
     },
 
     init() {
@@ -618,6 +619,13 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
         let db = new sqlite3.Database(dbPath);
         let output;
 
+        // Safely quote SQL identifiers (table/column names) to allow special chars like hyphens
+        function quoteId(name) {
+            if (!name && name !== 0) return '""';
+            // Convert to string and escape any double quotes inside identifier
+            const n = String(name);
+            return '"' + n.replace(/"/g, '""') + '"';
+        }
         async function ensureTableExists(db, tableName, columns) {
             if (!columns || columns.length === 0) columns = ['id']; // minimum column
             const tableNoExt = tableName.replace('.sqlite','');
@@ -895,18 +903,28 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         });
                         const colNames = columnsInfo.map(col => col.name);
                         if (!colNames.includes(getColumn)) {
-                            const alterSQL = `ALTER TABLE \"${tableNoExt}\" ADD COLUMN \"${getColumn}\" TEXT`;
-                            await new Promise((resolve, reject) => {
-                                db.run(alterSQL, [], err => err ? reject(err) : resolve());
-                            });
-                            if (debugMode) console.log(`[sqlite3] CHECKVAR: Dodano brakującą kolumnę ${getColumn}`);
+                            // Check for duplicate column name (case-insensitive)
+                            if (!colNames.map(c => c.toLowerCase()).includes(getColumn.toLowerCase())) {
+                                const alterSQL = `ALTER TABLE \"${tableNoExt}\" ADD COLUMN \"${getColumn}\" TEXT`;
+                                await new Promise((resolve, reject) => {
+                                    db.run(alterSQL, [], err => err ? reject(err) : resolve());
+                                });
+                                if (debugMode) console.log(`[sqlite3] CHECKVAR: Dodano brakującą kolumnę ${getColumn}`);
+                            } else {
+                                if (debugMode) console.log(`[sqlite3] CHECKVAR: Kolumna ${getColumn} już istnieje (duplikat)`);
+                            }
                         }
                         if (!colNames.includes(conditionColumn)) {
-                            const alterSQL = `ALTER TABLE \"${tableNoExt}\" ADD COLUMN \"${conditionColumn}\" TEXT`;
-                            await new Promise((resolve, reject) => {
-                                db.run(alterSQL, [], err => err ? reject(err) : resolve());
-                            });
-                            if (debugMode) console.log(`[sqlite3] CHECKVAR: Dodano brakującą kolumnę ${conditionColumn}`);
+                            // Check for duplicate column name (case-insensitive)
+                            if (!colNames.map(c => c.toLowerCase()).includes(conditionColumn.toLowerCase())) {
+                                const alterSQL = `ALTER TABLE \"${tableNoExt}\" ADD COLUMN \"${conditionColumn}\" TEXT`;
+                                await new Promise((resolve, reject) => {
+                                    db.run(alterSQL, [], err => err ? reject(err) : resolve());
+                                });
+                                if (debugMode) console.log(`[sqlite3] CHECKVAR: Dodano brakującą kolumnę ${conditionColumn}`);
+                            } else {
+                                if (debugMode) console.log(`[sqlite3] CHECKVAR: Kolumna ${conditionColumn} już istnieje (duplikat)`);
+                            }
                         }
                         if (debugMode) console.log('[sqlite3] CHECKVAR SQL:', `SELECT ${getColumn} FROM "${tableNoExt}" WHERE ${conditionColumn}=?`, [conditionValue]);
                         const sql = `SELECT ${getColumn} FROM "${tableNoExt}" WHERE ${conditionColumn}=?`;
