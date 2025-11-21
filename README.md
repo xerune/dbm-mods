@@ -8,7 +8,7 @@
 
 | File | Version | Author | Created | Updated |
 |------|--------|-------|-----------|----------------|
-| [SQLite_DB.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSQLite_DB.js) | 3.7.0 | xerune | 18.09.2025 09:23 | 16.11.2025 18:46 |
+| [SQLite_DB.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSQLite_DB.js) | 3.8.1 | xerune | 18.09.2025 09:23 | 21.11.2025 09:35 |
 | [Store_member_data_list.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DStore_member_data_list.js) | 3.1.0 | Flapekk | 13.10.2025 21:51 | Awaiting update |
 | [store_channel_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_channel_info.js) | 1.1.0 | vxed_ | 28.09.2025 07:37 | 09.10.2025 19:49 |
 | [store_invite_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_invite_info.js) | 3.1.1 | vxed_ | 18.09.2025 14:44 | 09.10.2025 19:49 |
