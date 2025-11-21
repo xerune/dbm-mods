@@ -334,5 +334,13 @@
     "author": "Flapekk",
     "createdDate": "13.10.2025 21:51",
     "updateDate": "undefined"
+  },
+  "[XR]Store_command_params.js": {
+    "version": "2.0.0",
+    "previousVersion": "undefined",
+    "folder": "actions",
+    "author": "xerune",
+    "createdDate": "21.11.2025 10:01",
+    "updateDate": "undefined"
   }
 }
