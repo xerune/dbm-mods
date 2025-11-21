@@ -4,11 +4,11 @@ module.exports = {
   section: "# VX - Message(s)",
   meta: {
     version: "3.2.0",
-    actionVersion: "3.6.2",
+    actionVersion: "3.7.0",
     preciseCheck: true,
-    author: "vxed_",
-    authorUrl: "https://github.com/vxe3D/dbm-mods",
-    downloadUrl: "https://github.com/vxe3D/dbm-mods",
+    author: "Xerune",
+    authorUrl: "https://github.com/xerune/dbm-mods",
+    downloadUrl: "https://github.com/xerune/dbm-mods",
   },
 
   size: function () {
@@ -742,6 +742,8 @@ module.exports = {
           <option value="RoleSelectMenu">Role Select Menu</option>
           <option value="MentionableSelectMenu">Mentionable Select Menu</option>
           <option value="ChannelSelectMenu">Channel Select Menu</option>
+          <option value="DateSelectMenu">Date Select Menu</option>
+          <option value="TimeSelectMenu">Time Select Menu</option>
         </optgroup>
         <optgroup label="Specific Channel Select Menu">
         <option value="ChannelTextSelectMenu">Text Channel Select Menu</option>
@@ -1036,6 +1038,8 @@ module.exports = {
             <option value="RoleSelectMenu">Role Select Menu</option>
             <option value="MentionableSelectMenu">Mentionable Select Menu</option>
             <option value="ChannelSelectMenu">Channel Select Menu</option>
+            <option value="DateSelectMenu">Date Select Menu</option>
+            <option value="TimeSelectMenu">Time Select Menu</option>
           </optgroup>
           <optgroup label="Specific Channel Select Menu">
           <option value="ChannelTextSelectMenu">Text Channel Select Menu</option>
@@ -1251,6 +1255,7 @@ module.exports = {
               sel.id = genSelectId();
             }
           }
+          
         }
 
         // Container Buttons
@@ -1269,6 +1274,7 @@ module.exports = {
               sel.containerId = genSelectId();
             }
           }
+          
         }
 
         // Section Buttons (accessories)
@@ -1299,6 +1305,7 @@ module.exports = {
                   sel.containerId = genSelectId();
                 }
               }
+              
             }
 
             // Child SectionComponents (buttons w sekcji)
@@ -1339,6 +1346,7 @@ module.exports = {
           for (const sel of comp.selectMenus) {
             sel.id = genSelectId();
           }
+          
         }
 
         // Container Buttons
@@ -1353,6 +1361,7 @@ module.exports = {
           for (const sel of comp.containerSelectMenus) {
             sel.containerId = genSelectId();
           }
+          
         }
 
         // Section Buttons (accessories)
@@ -1379,6 +1388,7 @@ module.exports = {
               for (const sel of child.containerSelectMenus) {
                 sel.containerId = genSelectId();
               }
+              
             }
 
             // Child SectionComponents (buttons w sekcji)
@@ -1738,6 +1748,8 @@ module.exports = {
             RoleSelectMenu: RoleSelectMenuBuilder,
             MentionableSelectMenu: MentionableSelectMenuBuilder,
             ChannelSelectMenu: ChannelSelectMenuBuilder,
+            DateSelectMenu: StringSelectMenuBuilder,
+            TimeSelectMenu: StringSelectMenuBuilder,
           };
 
           const Builder = BuilderMap[menu.SelectMenuType];
@@ -1760,20 +1772,36 @@ module.exports = {
             .setMinValues(Number(menu.min) || 1)
             .setMaxValues(Number(menu.max) || 1);
 
-          if (
-            Array.isArray(menu.options) &&
-            Builder === StringSelectMenuBuilder
-          ) {
-            selectMenu.addOptions(
-              menu.options.map((opt) => ({
-                label: opt.label || "ㅤ",
-                value: opt.value || "",
-                description: opt.description || undefined,
-                emoji: opt.emoji
-                  ? this.evalMessage(opt.emoji, cache)
-                  : undefined,
-              }))
-            );
+          if (Builder === StringSelectMenuBuilder) {
+            if (menu.SelectMenuType === "DateSelectMenu") {
+              const opts = [];
+              const now = new Date();
+              for (let d = 0; d < 14; d++) {
+                const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+                const day = String(dt.getDate()).padStart(2, "0");
+                const mon = String(dt.getMonth() + 1).padStart(2, "0");
+                const yr = dt.getFullYear();
+                const txt = `${day}.${mon}.${yr}`;
+                opts.push({ label: txt, value: txt });
+              }
+              selectMenu.addOptions(opts);
+            } else if (menu.SelectMenuType === "TimeSelectMenu") {
+              const opts = [];
+              for (let h = 0; h < 24; h++) {
+                const hh = String(h).padStart(2, "0") + ":00";
+                opts.push({ label: hh, value: hh });
+              }
+              selectMenu.addOptions(opts);
+            } else if (Array.isArray(menu.options)) {
+              selectMenu.addOptions(
+                menu.options.map((opt) => ({
+                  label: opt.label || "ㅤ",
+                  value: opt.value || "",
+                  description: opt.description || undefined,
+                  emoji: opt.emoji ? this.evalMessage(opt.emoji, cache) : undefined,
+                }))
+              );
+            }
           }
 
               const actions =
@@ -2197,6 +2225,8 @@ module.exports = {
                 RoleSelectMenu: RoleSelectMenuBuilder,
                 MentionableSelectMenu: MentionableSelectMenuBuilder,
                 ChannelSelectMenu: ChannelSelectMenuBuilder,
+                DateSelectMenu: StringSelectMenuBuilder,
+                TimeSelectMenu: StringSelectMenuBuilder,
               };
 
               const Builder = BuilderMap[menu.containerSelectMenuType];
@@ -2219,21 +2249,37 @@ module.exports = {
                 .setMinValues(Number(menu.containerMin) || 1)
                 .setMaxValues(Number(menu.containerMax) || 1);
 
-              if (
-                Array.isArray(menu.containerOptions) &&
-                Builder === StringSelectMenuBuilder
-              ) {
-                selectMenu.addOptions(
-                  menu.containerOptions.map((opt) => ({
-                    label: opt.containerLabel || "ㅤ",
-                    value: opt.containerValue || "",
-                    description: opt.containerDescription || undefined,
-                    emoji: opt.containerEmoji
-                      ? this.evalMessage(opt.containerEmoji, cache)
-                      : undefined,
-                    default: opt.containerDefault === true,
-                  }))
-                );
+              if (Builder === StringSelectMenuBuilder) {
+                if (menu.containerSelectMenuType === "DateSelectMenu") {
+                  const opts = [];
+                  const now = new Date();
+                  for (let d = 0; d < 14; d++) {
+                    const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+                    const day = String(dt.getDate()).padStart(2, "0");
+                    const mon = String(dt.getMonth() + 1).padStart(2, "0");
+                    const yr = dt.getFullYear();
+                    const txt = `${day}.${mon}.${yr}`;
+                    opts.push({ label: txt, value: txt });
+                  }
+                  selectMenu.addOptions(opts);
+                } else if (menu.containerSelectMenuType === "TimeSelectMenu") {
+                  const opts = [];
+                  for (let h = 0; h < 24; h++) {
+                    const hh = String(h).padStart(2, "0") + ":00";
+                    opts.push({ label: hh, value: hh });
+                  }
+                  selectMenu.addOptions(opts);
+                } else if (Array.isArray(menu.containerOptions)) {
+                  selectMenu.addOptions(
+                    menu.containerOptions.map((opt) => ({
+                      label: opt.containerLabel || "ㅤ",
+                      value: opt.containerValue || "",
+                      description: opt.containerDescription || undefined,
+                      emoji: opt.containerEmoji ? this.evalMessage(opt.containerEmoji, cache) : undefined,
+                      default: opt.containerDefault === true,
+                    }))
+                  );
+                }
               }
 
               const actions =
