@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "3.7.0",
+        actionVersion: "3.8.1",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -23,7 +23,6 @@ module.exports = {
         let tableName = data.tableName || '';
         if (tableName && !tableName.endsWith('.sqlite')) tableName += '.sqlite';
         let varName = data.varName || '';
-            // Show tableName and varName for Store, Count, Update, and Delete operations
         if (['store', 'count', 'update', 'delete', 'countList', 'checkvar', 'search'].includes(data.dboperation)) {
             let parts = [opLabel];
             if (tableName) parts.push(`File: ${tableName}`);
@@ -38,7 +37,7 @@ module.exports = {
         return [data.varName, 'Database'];
     },
 
-fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery', 'searchByIndex', 'storeKey', 'storeCollection', 'debugMode', 'tableName', 'storage', 'varName', 'deleteCollection', 'deleteColumnsToClear', 'deleteKey', 'getColumn', 'conditionColumn', 'conditionValue', 'countColumn', 'comparison', 'branch', 'checkvarConditionColumn', 'checkvarGetColumn', 'checkvarConditionValue', 'checkvarComparison', 'checkvarValue', 'countListMatchColumn', 'countListCheckValue', 'countListColumn', 'searchReturnColumn', 'searchListColumn', 'searchValue'],
+    fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery', 'searchByIndex', 'storeKey', 'storeCollection', 'debugMode', 'tableName', 'storage', 'varName', 'deleteCollection', 'deleteColumnsToClear', 'deleteKey', 'getColumn', 'conditionColumn', 'conditionValue', 'countColumn', 'comparison', 'branch', 'checkvarConditionColumn', 'checkvarGetColumn', 'checkvarConditionValue', 'checkvarComparison', 'checkvarValue', 'countListMatchColumn', 'countListCheckValue', 'countListColumn', 'searchReturnColumn', 'searchListColumn', 'searchValue', 'leaderColStore', 'leaderValueStore', 'leaderColGet', 'leaderColMatch', 'leaderShowNumbers', 'leaderCharAfter', 'leaderStartText', 'leaderMiddleText', 'leaderEndText', 'leaderSortType', 'leaderResultLimit'],
 
   html(isEvent, data) {
   const actionVersion = (this.meta && typeof this.meta.actionVersion !== "undefined") ? `${this.meta.actionVersion}` : "???";
@@ -87,7 +86,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
           input.round:focus {border-color:#b595ffff;outline:none;}
         </style>
 
-        <tab-system id="tabs" style="margin-top: -15px;">
+        <tab-system id="tabs" style="margin-top: -30px;">
             <tab label="SQLite" icon="database">
                 <div style="margin-bottom: 12px;">
                     <span class="dbminputlabel">Operation</span>
@@ -99,6 +98,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         <option value="delete">Delete</option>
                         <option value="countList">Count List</option>
                         <option value="count">Count Values</option>
+                        <option value="leaderboard">Leaderboard</option>
                     </select>
                 <div id="countFieldsDiv" style="margin-top: 10px; margin-bottom: 10px; display:none;">
                     <span class="dbminputlabel">Column to count values</span>
@@ -184,6 +184,63 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     <div style="width: 100%; margin-top: 10px;">
                         <span class="dbminputlabel">Value to find</span>
                         <input id="searchValue" class="round" type="text" placeholder="ex. 594974899513327617" style="width: 100%;">
+                    </div>
+                </div>
+                <div id="leaderboardFieldsDiv" style="margin-top: 10px; margin-bottom: 10px; display:none; width: 100%;">
+                    <div style="float: left; width: 48%;">
+                        <span class="dbminputlabel">Column to store</span>
+                        <input id="leaderColStore" class="round" type="text" placeholder="ex. Score">
+                    </div>
+                    <div style="float: right; width: 48%;">
+                        <span class="dbminputlabel">Value to store</span>
+                        <input id="leaderValueStore" class="round" type="text" placeholder="ex. 123">
+                    </div>
+                    <div style="clear: both;"></div>
+                    <div style="float: left; width: 48%; margin-top: 6px;">
+                        <span class="dbminputlabel">Column to get</span>
+                        <input id="leaderColGet" class="round" type="text" placeholder="ex. Name">
+                    </div>
+                    <div style="float: right; width: 48%; margin-top: 6px;">
+                        <span class="dbminputlabel">Column to match</span>
+                        <input id="leaderColMatch" class="round" type="text" placeholder="ex. ID">
+                    </div>
+                    <div style="clear: both;"></div>
+                    <hr class="subtlebar" style="margin-top: 8px; margin-bottom: 8px; width: 100%;">
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:140px;">
+                            <span class="dbminputlabel">Show Numbers</span>
+                            <select id="leaderShowNumbers" class="round">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div style="flex:1; min-width:140px;">
+                            <span class="dbminputlabel">Character after number</span>
+                            <input id="leaderCharAfter" class="round" type="text" placeholder="ex. .">
+                        </div>
+                        <div style="flex:1; min-width:160px;">
+                            <span class="dbminputlabel">Start Text</span>
+                            <input id="leaderStartText" class="round" type="text" placeholder="ex. Top players:">
+                        </div>
+                        <div style="flex:1; min-width:160px;">
+                            <span class="dbminputlabel">Middle Text</span>
+                            <input id="leaderMiddleText" class="round" type="text" placeholder="ex. - ">
+                        </div>
+                        <div style="flex:1; min-width:160px;">
+                            <span class="dbminputlabel">End Text</span>
+                            <input id="leaderEndText" class="round" type="text" placeholder="ex. pts">
+                        </div>
+                        <div style="flex:1; min-width:140px;">
+                            <span class="dbminputlabel">Sort Type</span>
+                            <select id="leaderSortType" class="round">
+                                <option value="desc" selected>Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <div style="flex:1; min-width:120px;">
+                            <span class="dbminputlabel">Result Limit</span>
+                            <input id="leaderResultLimit" class="round" type="text" placeholder="ex. 10">
+                        </div>
                     </div>
                 </div>
                 <div id="checkVarFieldsDiv" style="margin-bottom: 10px; display:none; width: 100%; overflow: hidden;">
@@ -515,6 +572,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
             updateVisibility('updateConditionDiv', false);
             updateVisibility('countFieldsDiv', false);
             updateVisibility('countListFieldsDiv', false);
+            updateVisibility('leaderboardFieldsDiv', false);
             updateVisibility('checkVarFieldsDiv', false);
             updateVisibility('SearchFieldsDiv', false);
 
@@ -526,7 +584,7 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
 
             const storeInVarDiv = document.getElementById('storeInVariableDiv');
             if (storeInVarDiv) {
-                if (op === 'store' || op === 'count' || op === 'countList' || op === 'search') {
+                if (op === 'store' || op === 'count' || op === 'countList' || op === 'search' || op === 'leaderboard') {
                     storeInVarDiv.style.display = '';
                 } else {
                     storeInVarDiv.style.display = 'none';
@@ -538,6 +596,8 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                 updateVisibility('updateConditionDiv', true);
             } else if (op === 'get') {
                 updateVisibility('getColumnDiv', true);
+            } else if (op === 'leaderboard') {
+                updateVisibility('leaderboardFieldsDiv', true);
             } else if (op === 'store') {
                 updateVisibility('storeFieldsDiv', true);
             } else if (op === 'delete') {
@@ -1116,6 +1176,73 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                     if (debugMode) console.log('[sqlite3] countList output:', output);
                 }
             // end countlist
+            } else if (dboperation === 'leaderboard') {
+                if (debugMode) console.log('[sqlite3] OPERATION: leaderboard');
+                const leaderColStore = this.evalMessage(data.leaderColStore, cache);
+                const leaderValueStore = this.evalMessage(data.leaderValueStore, cache);
+                const leaderColGet = this.evalMessage(data.leaderColGet, cache);
+                const leaderColMatch = this.evalMessage(data.leaderColMatch, cache);
+                const leaderShowNumbers = (typeof data.leaderShowNumbers === 'string') ? data.leaderShowNumbers === 'true' : !!data.leaderShowNumbers;
+                const leaderCharAfter = this.evalMessage(data.leaderCharAfter, cache) || '.';
+                const leaderStartText = this.evalMessage(data.leaderStartText, cache) || '';
+                const leaderMiddleText = this.evalMessage(data.leaderMiddleText, cache) || ' - ';
+                const leaderEndText = this.evalMessage(data.leaderEndText, cache) || '';
+                const leaderSortType = (this.evalMessage(data.leaderSortType, cache) || 'desc').toLowerCase() === 'asc' ? 'ASC' : 'DESC';
+                let leaderResultLimit = parseInt(this.evalMessage(data.leaderResultLimit, cache), 10);
+                if (isNaN(leaderResultLimit) || leaderResultLimit <= 0) leaderResultLimit = 10;
+
+                if (!leaderColGet || !leaderColStore) {
+                    output = '[sqlite3] leaderboard: Missing required fields (Column to get / Column to store).';
+                    if (debugMode) console.log('[sqlite3] leaderboard output:', output);
+                } else {
+                    try {
+                        const tableNoExt = tableName.replace('.sqlite','');
+                        let sql = `SELECT ${quoteId(leaderColGet)} AS _g, ${quoteId(leaderColStore)} AS _s FROM "${tableNoExt}"`;
+                        const params = [];
+                        if (leaderColMatch && leaderValueStore) {
+                            sql += ` WHERE ${quoteId(leaderColMatch)} = ?`;
+                            params.push(leaderValueStore);
+                        }
+                        sql += ` ORDER BY CAST(${quoteId(leaderColStore)} AS REAL) ${leaderSortType} LIMIT ${leaderResultLimit}`;
+                        if (debugMode) console.log('[sqlite3] leaderboard SQL:', sql, params);
+
+                        const rows = await new Promise((resolve, reject) => {
+                            db.all(sql, params, (err, rows) => {
+                                if (err) {
+                                    console.error('[sqlite3] leaderboard ERROR:', err);
+                                    reject(err);
+                                } else {
+                                    resolve(rows || []);
+                                }
+                            });
+                        });
+
+                        // Ensure numeric sort in JS as fallback
+                        rows.sort((a, b) => {
+                            const na = Number(a && a._s ? a._s : 0);
+                            const nb = Number(b && b._s ? b._s : 0);
+                            return leaderSortType === 'ASC' ? na - nb : nb - na;
+                        });
+
+                        const lines = [];
+                        if (leaderStartText && leaderStartText.trim() !== '') lines.push(leaderStartText);
+                        for (let i = 0; i < rows.length; i++) {
+                            const r = rows[i];
+                            const name = r ? (r._g !== undefined && r._g !== null ? String(r._g) : '') : '';
+                            const score = r ? (r._s !== undefined && r._s !== null ? String(r._s) : '0') : '0';
+                            const idx = i + 1;
+                            const numPart = leaderShowNumbers ? `${idx}${leaderCharAfter} ` : '';
+                            const middle = leaderMiddleText !== undefined ? leaderMiddleText : ' - ';
+                            const line = `${numPart}${name}${middle}${score}${leaderEndText}`;
+                            lines.push(line);
+                        }
+                        output = lines.join('\n');
+                        if (debugMode) console.log('[sqlite3] leaderboard output lines:', lines.length);
+                    } catch (err) {
+                        console.error('[sqlite3] leaderboard failed:', err);
+                        output = `[sqlite3] leaderboard Error: ${err && err.message ? err.message : String(err)}`;
+                    }
+                }
             } else if (dboperation === 'update') {
                 if (debugMode) console.log('[sqlite3] OPERATION: update');
                 if (debugMode) console.log('[sqlite3] UPDATE operation entered.', {
@@ -1250,13 +1377,20 @@ fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery'
                         const insertSql = `INSERT INTO "${tableName.replace('.sqlite','')}" (${insertColumns.map(c => quoteId(c)).join(', ')}) VALUES (${placeholders})`;
                         output = await insertWithAutoColumns(insertSql, insertValues, insertColumns, tableName.replace('.sqlite',''));
                     } else {
-                        const setClause = columns.filter(col => col !== conditionColumn).map((col, i) => `${quoteId(col)}=?`).join(', ');
-                        const updateValues = columns.filter(col => col !== conditionColumn).map((col, i) => values[columns.indexOf(col)]);
+                        const nonConditionCols = columns.filter(col => col !== conditionColumn);
+                        const setClause = nonConditionCols.map((col) => `${quoteId(col)}=?`).join(', ');
+                        const updateValues = nonConditionCols.map((col) => values[columns.indexOf(col)]);
                         updateValues.push(effectiveConditionValue);
-                        if (debugMode) console.log('[sqlite3] UPDATE: Record exists, will update.', { setClause, updateValues });
-                        output = String(output);
-                        const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${quoteId(conditionColumn)}=?`;
-                        output = await updateWithAutoColumns(sql, updateValues, columns, tableName.replace('.sqlite',''));
+
+                        if (nonConditionCols.length === 0) {
+                            if (debugMode) console.log('[sqlite3] UPDATE: No columns to update (only conditionColumn present)');
+                            output = '[sqlite3] UPDATE: No columns to update.';
+                        } else {
+                            if (debugMode) console.log('[sqlite3] UPDATE: Record exists, will update.', { setClause, updateValues });
+                            output = String(output);
+                            const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${quoteId(conditionColumn)}=?`;
+                            output = await updateWithAutoColumns(sql, updateValues, nonConditionCols, tableName.replace('.sqlite',''));
+                        }
                     }
                 } else {
                     if (debugMode) console.log('[sqlite3] UPDATE: Missing columns or values.');
