@@ -112,11 +112,11 @@
     "folder": "actions"
   },
   "[VX]send_components_v2_MOD.js": {
-    "version": "3.6.2",
-    "author": "vxed_",
+    "version": "3.7.0",
+    "author": "Xerune",
     "createdDate": "18.09.2025 09:23",
-    "updateDate": "19.09.2025 10:24",
-    "previousVersion": "undefined",
+    "updateDate": "21.11.2025 13:55",
+    "previousVersion": "3.6.2",
     "folder": "actions"
   },
   "[VX]set_bot_activity_MOD.js": {
