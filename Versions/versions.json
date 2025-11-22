@@ -183,14 +183,6 @@
     "previousVersion": "undefined",
     "folder": "actions"
   },
-  "[VX]wait_plus_MOD.js": {
-    "version": "3.5.1",
-    "author": "vxed_",
-    "createdDate": "18.09.2025 09:23",
-    "updateDate": "28.09.2025 08:07",
-    "previousVersion": "3.5.0",
-    "folder": "actions"
-  },
   "[VX]store_server_info.js": {
     "version": "3.4.2",
     "author": "vxed_",
