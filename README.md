@@ -2,7 +2,7 @@
 
 | <img src="https://i.imgur.com/6t5z2Q6.png" width="16" height="16"> Downloader | <img src="https://i.imgur.com/tctsqRS.png" width="16" height="16"> Actions | <img src="https://i.imgur.com/ezqaGtk.png" width="16" height="16"> Events |
 |------|-------|-------|
-[Click me!](https://xerune.github.io/dbm-mods/Versions/download.html) | 43 | 0 |
+[Click me!](https://xerune.github.io/dbm-mods/Versions/download.html) | 42 | 0 |
 
 <h3><img src="https://i.imgur.com/tctsqRS.png" width="16" height="16"> Latest Actions</h3>
 
@@ -26,7 +26,6 @@
 | [Copy_Emoji_To_Server.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DCopy_Emoji_To_Server.js) | 1.0.0 | vxed_ | 09.10.2025 12:16 | Awaiting update |
 | [Store_member_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DStore_member_info.js) | 3.4.0 | vxed_ | 07.10.2025 08:47 | Awaiting update |
 | [Check_variable.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DCheck_variable.js) | 3.0.6 | vxed_ | 28.09.2025 05:31 | 05.10.2025 09:12 |
-| [wait_plus_MOD.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dwait_plus_MOD.js) | 3.5.1 | vxed_ | 18.09.2025 09:23 | 28.09.2025 08:07 |
 | [store_voice_channel_info.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dstore_voice_channel_info.js) | 1.0.0 | vxed_ | 28.09.2025 07:39 | Awaiting update |
 | [replace_text.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dreplace_text.js) | 3.5.0 | vxed_ | 18.09.2025 09:23 | 28.09.2025 05:09 |
 | [set_bot_activity_MOD.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dset_bot_activity_MOD.js) | 3.4.0 | vxed_ | 18.09.2025 09:23 | 28.09.2025 05:07 |
