@@ -346,7 +346,7 @@
   "[XR]Wait_Resumer.js": {
     "version": "1.0.0",
     "previousVersion": "undefined",
-    "folder": "actions",
+    "folder": "events",
     "author": "unknown",
     "createdDate": "22.11.2025 16:09",
     "updateDate": "undefined"
