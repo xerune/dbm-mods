@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "3.8.1",
+        actionVersion: "3.9.0",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -906,18 +906,20 @@ module.exports = {
                 const getColumnRaw = this.evalMessage(data.getColumn, cache);
                 const getColumn = getColumnRaw && getColumnRaw.trim() !== '' ? getColumnRaw.trim() : null;
                 if (getColumn && conditionColumn && values.length > 0) {
-                    const sql = `SELECT ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
+                    const columnToCheck = columns && columns.length > 0 ? columns[0] : null;
+                    const valueToCheck = String(values[0]).trim();
+                    const sql = `SELECT CAST(${quoteId(getColumn)} AS TEXT) AS ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)} = ? COLLATE BINARY`;
                     output = await new Promise((resolve, reject) => {
-                        db.get(sql, [values[0]], async (err, row) => {
+                        db.get(sql, [valueToCheck], async (err, row) => {
                             if (err) {
                                 try {
-                                    const result = await handleMissingTableOrColumn(err, sql, [values[0]], tableName.replace('.sqlite', ''), getColumn);
-                                    resolve(result ? result[getColumn] : '0');
+                                    const result = await handleMissingTableOrColumn(err, sql, [valueToCheck], tableName.replace('.sqlite', ''), getColumn);
+                                    resolve(result ? String(result[getColumn]) : '0');
                                 } catch (finalErr) {
                                     reject(finalErr);
                                 }
                             } else {
-                                resolve(row ? row[getColumn] : '0');
+                                resolve(row ? String(row[getColumn]) : '0');
                             }
                         });
                     });
@@ -979,15 +981,15 @@ module.exports = {
                                 if (debugMode) console.log(`[sqlite3] CHECKVAR: Kolumna ${conditionColumn} już istnieje (duplikat)`);
                             }
                         }
-                        const sql = `SELECT ${quoteId(getColumn)} FROM "${tableNoExt}" WHERE ${quoteId(conditionColumn)}=?`;
+                        const sql = `SELECT CAST(${quoteId(getColumn)} AS TEXT) AS ${quoteId(getColumn)} FROM "${tableNoExt}" WHERE ${quoteId(conditionColumn)}=?`;
                         if (debugMode) console.log('[sqlite3] CHECKVAR SQL:', sql, [conditionValue]);
                         const row = await new Promise((resolve, reject) => {
-                            db.get(sql, [conditionValue], (err, row) => {
+                            db.get(sql, [String(conditionValue)], (err, row) => {
                                 if (err) reject(err);
                                 else resolve(row);
                             });
                         });
-                        val1 = row ? row[getColumn] : undefined;
+                        val1 = row ? String(row[getColumn]) : undefined;
                     } else {
                         val1 = undefined;
                     }
@@ -1306,11 +1308,11 @@ module.exports = {
 
                             if (val.startsWith('^+')) {
                                 const toAppend = val.slice(2);
-                                const sql = `SELECT ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
-                                const row = await new Promise((resolve, reject) => {
-                                    db.get(sql, [effectiveConditionValue], (err, row) => err ? reject(err) : resolve(row));
-                                });
-                                let current = row && row[col] != null ? String(row[col]) : '';
+                                const sql = `SELECT CAST(${quoteId(col)} AS TEXT) AS ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
+                                    const row = await new Promise((resolve, reject) => {
+                                        db.get(sql, [String(effectiveConditionValue)], (err, row) => err ? reject(err) : resolve(row));
+                                    });
+                                    let current = row && row[col] != null ? String(row[col]) : '';
                                 if (debugMode) console.log(`[sqlite3][DEBUG] Append mode for "${col}": current="${current}", toAppend="${toAppend}"`);
                                 values[i] = current.length > 0 ? current + ', ' + toAppend : toAppend;
                                 if (debugMode) console.log(`[sqlite3][DEBUG] New value for "${col}":`, values[i]);
@@ -1318,9 +1320,9 @@ module.exports = {
 
                             else if (val.startsWith('^-')) {
                                 const toRemove = val.slice(2);
-                                const sql = `SELECT ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
+                                const sql = `SELECT CAST(${quoteId(col)} AS TEXT) AS ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                                 const row = await new Promise((resolve, reject) => {
-                                    db.get(sql, [effectiveConditionValue], (err, row) => err ? reject(err) : resolve(row));
+                                    db.get(sql, [String(effectiveConditionValue)], (err, row) => err ? reject(err) : resolve(row));
                                 });
                                 let current = row && row[col] != null ? String(row[col]) : '';
                                 if (current.length === 0) {
@@ -1336,11 +1338,11 @@ module.exports = {
                             }
 
                             else if (/^[+-]\d+$/.test(val)) {
-                                const sql = `SELECT ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
+                                const sql = `SELECT CAST(${quoteId(col)} AS TEXT) AS ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                                 const row = await new Promise((resolve, reject) => {
-                                    db.get(sql, [effectiveConditionValue], (err, row) => err ? reject(err) : resolve(row));
+                                    db.get(sql, [String(effectiveConditionValue)], (err, row) => err ? reject(err) : resolve(row));
                                 });
-                                let current = row && row[col] != null ? BigInt(row[col]) : 0n;
+                                let current = row && row[col] != null ? BigInt(String(row[col])) : 0n;
                                 let diff = BigInt(val);
                                 values[i] = (current + diff).toString();
                                 if (debugMode) console.log(`[sqlite3][DEBUG] Arithmetic mode for "${col}": current=${current}, diff=${diff}, newValue=${values[i]}`);
@@ -1433,18 +1435,19 @@ module.exports = {
                     } else if (getColumn && conditionColumn && values.length > 0) {
 
                         const columnToCheck = columns && columns.length > 0 ? columns[0] : null;
-                        const sql = `SELECT ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)}=?`;
+                        const valueToCheck = String(values[0]).trim();
+                        const sql = `SELECT CAST(${quoteId(getColumn)} AS TEXT) AS ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)}=?`;
                         output = await new Promise((resolve, reject) => {
-                            db.get(sql, [values[0]], async (err, row) => {
+                            db.get(sql, [valueToCheck], async (err, row) => {
                                 if (err) {
                                     try {
-                                        const result = await handleMissingTableOrColumn(err, sql, [values[0]], tableName.replace('.sqlite', ''), getColumn);
-                                        resolve(result ? result[getColumn] : '0');
+                                        const result = await handleMissingTableOrColumn(err, sql, [valueToCheck], tableName.replace('.sqlite', ''), getColumn);
+                                        resolve(result ? String(result[getColumn]) : '0');
                                     } catch (finalErr) {
                                         reject(finalErr);
                                     }
                                 } else {
-                                    resolve(row ? row[getColumn] : '0');
+                                    resolve(row ? String(row[getColumn]) : '0');
                                 }
                             });
                         });
@@ -1461,7 +1464,7 @@ module.exports = {
                             output = 'Brak danych';
                         } else {
                             const valueToCheck = String(values[0]).trim();
-                            const sql = `SELECT ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)} = ? COLLATE BINARY`;
+                            const sql = `SELECT CAST(${quoteId(getColumn)} AS TEXT) AS ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)} = ? COLLATE BINARY`;
 
                             if (debugMode) console.log(`[DEBUG] SQL: ${sql}, value: "${valueToCheck}"`);
 
@@ -1475,16 +1478,17 @@ module.exports = {
                                         resolve('Brak danych');
                                     } else {
                                         if (debugMode) console.log(`[DEBUG] Row found:`, row);
-                                        resolve(row[getColumn] !== undefined ? row[getColumn] : 'Brak danych');
+                                        resolve(row[getColumn] !== undefined ? String(row[getColumn]) : 'Brak danych');
                                     }
                                 });
                             });
                         }
                     } else if (!getColumn && conditionColumn && values.length > 0) {
                         if (debugMode) console.log('[sqlite3] STORE: conditionColumn only', { conditionColumn, value: values[0] });
-                        const sql = `SELECT * FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
+                        const valueToCheck = String(values[0]).trim();
+                        const sql = `SELECT * FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=? COLLATE BINARY`;
                         output = await new Promise((resolve, reject) => {
-                            db.get(sql, [values[0]], (err, row) => {
+                            db.get(sql, [valueToCheck], (err, row) => {
                                 if (err) {
                                     console.error('[sqlite3] STORE GET RECORD ERROR:', err);
                                     reject(err);
