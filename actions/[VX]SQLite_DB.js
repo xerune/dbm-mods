@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "3.9.0",
+        actionVersion: "4.0.0",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -37,7 +37,7 @@ module.exports = {
         return [data.varName, 'Database'];
     },
 
-    fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery', 'searchByIndex', 'storeKey', 'storeCollection', 'debugMode', 'tableName', 'storage', 'varName', 'deleteCollection', 'deleteColumnsToClear', 'deleteKey', 'getColumn', 'conditionColumn', 'conditionValue', 'countColumn', 'comparison', 'branch', 'checkvarConditionColumn', 'checkvarGetColumn', 'checkvarConditionValue', 'checkvarComparison', 'checkvarValue', 'countListMatchColumn', 'countListCheckValue', 'countListColumn', 'searchReturnColumn', 'searchListColumn', 'searchValue', 'leaderColStore', 'leaderValueStore', 'leaderColGet', 'leaderColMatch', 'leaderShowNumbers', 'leaderCharAfter', 'leaderStartText', 'leaderMiddleText', 'leaderEndText', 'leaderSortType', 'leaderResultLimit'],
+    fields: ['dboperation', 'collection', 'key', 'fieldName', 'value', 'searchQuery', 'searchByIndex', 'storeKey', 'storeCollection', 'debugMode', 'tableName', 'storage', 'varName', 'deleteCollection', 'deleteColumnsToClear', 'deleteKey', 'getColumn', 'conditionColumn', 'conditionValue', 'countColumn', 'comparison', 'branch', 'checkvarConditionColumn', 'checkvarGetColumn', 'checkvarConditionValue', 'checkvarComparison', 'checkvarValue', 'countListMatchColumn', 'countListCheckValue', 'countListColumn', 'searchReturnColumn', 'searchListColumn', 'searchValue', 'leaderColStore', 'leaderColGet', 'leaderShowNumbers', 'leaderCharAfter', 'leaderStartText', 'leaderMiddleText', 'leaderEndText', 'leaderSortType', 'leaderResultLimit'],
 
   html(isEvent, data) {
   const actionVersion = (this.meta && typeof this.meta.actionVersion !== "undefined") ? `${this.meta.actionVersion}` : "???";
@@ -188,21 +188,12 @@ module.exports = {
                 </div>
                 <div id="leaderboardFieldsDiv" style="margin-top: 10px; margin-bottom: 10px; display:none; width: 100%;">
                     <div style="float: left; width: 48%;">
-                        <span class="dbminputlabel">Column to store</span>
-                        <input id="leaderColStore" class="round" type="text" placeholder="ex. Score">
+                        <span class="dbminputlabel">Users Column</span>
+                        <input id="leaderColGet" class="round" type="text" placeholder="ex. Name, Username, ID">
                     </div>
                     <div style="float: right; width: 48%;">
-                        <span class="dbminputlabel">Value to store</span>
-                        <input id="leaderValueStore" class="round" type="text" placeholder="ex. 123">
-                    </div>
-                    <div style="clear: both;"></div>
-                    <div style="float: left; width: 48%; margin-top: 6px;">
-                        <span class="dbminputlabel">Column to get</span>
-                        <input id="leaderColGet" class="round" type="text" placeholder="ex. Name">
-                    </div>
-                    <div style="float: right; width: 48%; margin-top: 6px;">
-                        <span class="dbminputlabel">Column to match</span>
-                        <input id="leaderColMatch" class="round" type="text" placeholder="ex. ID">
+                        <span class="dbminputlabel">Score Column</span>
+                        <input id="leaderColStore" class="round" type="text" placeholder="ex. Score, Wydatki">
                     </div>
                     <div style="clear: both;"></div>
                     <hr class="subtlebar" style="margin-top: 8px; margin-bottom: 8px; width: 100%;">
@@ -242,6 +233,7 @@ module.exports = {
                             <input id="leaderResultLimit" class="round" type="text" placeholder="ex. 10">
                         </div>
                     </div>
+                    <div style="clear: both;"></div>
                 </div>
                 <div id="checkVarFieldsDiv" style="margin-bottom: 10px; display:none; width: 100%; overflow: hidden;">
                     <div style="float: left; width: 48%;">
@@ -1181,9 +1173,7 @@ module.exports = {
             } else if (dboperation === 'leaderboard') {
                 if (debugMode) console.log('[sqlite3] OPERATION: leaderboard');
                 const leaderColStore = this.evalMessage(data.leaderColStore, cache);
-                const leaderValueStore = this.evalMessage(data.leaderValueStore, cache);
                 const leaderColGet = this.evalMessage(data.leaderColGet, cache);
-                const leaderColMatch = this.evalMessage(data.leaderColMatch, cache);
                 const leaderShowNumbers = (typeof data.leaderShowNumbers === 'string') ? data.leaderShowNumbers === 'true' : !!data.leaderShowNumbers;
                 const leaderCharAfter = this.evalMessage(data.leaderCharAfter, cache) || '.';
                 const leaderStartText = this.evalMessage(data.leaderStartText, cache) || '';
@@ -1199,17 +1189,11 @@ module.exports = {
                 } else {
                     try {
                         const tableNoExt = tableName.replace('.sqlite','');
-                        let sql = `SELECT ${quoteId(leaderColGet)} AS _g, ${quoteId(leaderColStore)} AS _s FROM "${tableNoExt}"`;
-                        const params = [];
-                        if (leaderColMatch && leaderValueStore) {
-                            sql += ` WHERE ${quoteId(leaderColMatch)} = ?`;
-                            params.push(leaderValueStore);
-                        }
-                        sql += ` ORDER BY CAST(${quoteId(leaderColStore)} AS REAL) ${leaderSortType} LIMIT ${leaderResultLimit}`;
-                        if (debugMode) console.log('[sqlite3] leaderboard SQL:', sql, params);
+                        const sql = `SELECT ${quoteId(leaderColGet)} AS _g, ${quoteId(leaderColStore)} AS _s FROM "${tableNoExt}" ORDER BY CAST(${quoteId(leaderColStore)} AS REAL) ${leaderSortType} LIMIT ${leaderResultLimit}`;
+                        if (debugMode) console.log('[sqlite3] leaderboard SQL:', sql);
 
                         const rows = await new Promise((resolve, reject) => {
-                            db.all(sql, params, (err, rows) => {
+                            db.all(sql, [], (err, rows) => {
                                 if (err) {
                                     console.error('[sqlite3] leaderboard ERROR:', err);
                                     reject(err);
@@ -1230,8 +1214,17 @@ module.exports = {
                         if (leaderStartText && leaderStartText.trim() !== '') lines.push(leaderStartText);
                         for (let i = 0; i < rows.length; i++) {
                             const r = rows[i];
-                            const name = r ? (r._g !== undefined && r._g !== null ? String(r._g) : '') : '';
+                            let name = r ? (r._g !== undefined && r._g !== null ? String(r._g) : '') : '';
                             const score = r ? (r._s !== undefined && r._s !== null ? String(r._s) : '0') : '0';
+                            // Trim and detect pure numeric Discord IDs (common length 17-21 digits)
+                            if (typeof name === 'string') {
+                                name = name.trim();
+                                const isAlreadyMention = /^<@!?\d+>$/.test(name);
+                                const isNumericId = /^\d{17,21}$/.test(name);
+                                if (isNumericId && !isAlreadyMention) {
+                                    name = `<@${name}>`;
+                                }
+                            }
                             const idx = i + 1;
                             const numPart = leaderShowNumbers ? `${idx}${leaderCharAfter} ` : '';
                             const middle = leaderMiddleText !== undefined ? leaderMiddleText : ' - ';
