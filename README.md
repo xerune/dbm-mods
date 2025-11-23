@@ -8,11 +8,11 @@
 
 | File | Version | Author | Created | Updated |
 |------|--------|-------|-----------|----------------|
+| [SQLite_DB.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSQLite_DB.js) | 3.9.0 | xerune | 18.09.2025 09:23 | 23.11.2025 18:51 |
 | [wait_plus_MOD.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BXR%5Dwait_plus_MOD.js) | 3.6.0 | Xerune | 22.11.2025 16:07 | Awaiting update |
 | [send_components_v2_MOD.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5Dsend_components_v2_MOD.js) | 3.7.0 | Xerune | 18.09.2025 09:23 | 21.11.2025 13:55 |
 | [Generate_Timestamp.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BXR%5DGenerate_Timestamp.js) | 3.6.0 | Xerune | 21.11.2025 13:52 | Awaiting update |
 | [Store_command_params.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BXR%5DStore_command_params.js) | 2.0.0 | xerune | 21.11.2025 10:01 | Awaiting update |
-| [SQLite_DB.js](https://github.com/vxe3D/dbm-mods/blob/main/actions%2F%5BVX%5DSQLite_DB.js) | 3.8.1 | xerune | 18.09.2025 09:23 | 21.11.2025 09:35 |
 
 <h3><img src="https://i.imgur.com/tctsqRS.png" width="16" height="16"> Other Actions</h3>
 
