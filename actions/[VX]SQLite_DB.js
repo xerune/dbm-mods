@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "4.0.0",
+        actionVersion: "4.0.1",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -1175,7 +1175,8 @@ module.exports = {
                 const leaderColStore = this.evalMessage(data.leaderColStore, cache);
                 const leaderColGet = this.evalMessage(data.leaderColGet, cache);
                 const leaderShowNumbers = (typeof data.leaderShowNumbers === 'string') ? data.leaderShowNumbers === 'true' : !!data.leaderShowNumbers;
-                const leaderCharAfter = this.evalMessage(data.leaderCharAfter, cache) || '.';
+                // Do not default to a dot — if user leaves this empty, treat as empty
+                const leaderCharAfter = this.evalMessage(data.leaderCharAfter, cache) || '';
                 const leaderStartText = this.evalMessage(data.leaderStartText, cache) || '';
                 const leaderMiddleText = this.evalMessage(data.leaderMiddleText, cache) || ' - ';
                 const leaderEndText = this.evalMessage(data.leaderEndText, cache) || '';
@@ -1226,9 +1227,15 @@ module.exports = {
                                 }
                             }
                             const idx = i + 1;
-                            const numPart = leaderShowNumbers ? `${idx}${leaderCharAfter} ` : '';
+                            let numPart = '';
+                            if (leaderShowNumbers) {
+                                // If user provided a character after number use it, otherwise just the number
+                                const char = leaderCharAfter || '';
+                                numPart = `${idx}${char}`;
+                            }
                             const middle = leaderMiddleText !== undefined ? leaderMiddleText : ' - ';
-                            const line = `${numPart}${name}${middle}${score}${leaderEndText}`;
+                            // Only add a single separating space after the number part when it's present.
+                            const line = `${numPart ? numPart + ' ' : ''}${name}${middle}${score}${leaderEndText}`;
                             lines.push(line);
                         }
                         output = lines.join('\n');
@@ -1330,14 +1337,17 @@ module.exports = {
                                 }
                             }
 
-                            else if (/^[+-]\d+$/.test(val)) {
+                            else if (/^[+-]\d+(?:\.\d+)?$/.test(val)) {
                                 const sql = `SELECT CAST(${quoteId(col)} AS TEXT) AS ${quoteId(col)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(conditionColumn)}=?`;
                                 const row = await new Promise((resolve, reject) => {
                                     db.get(sql, [String(effectiveConditionValue)], (err, row) => err ? reject(err) : resolve(row));
                                 });
-                                let current = row && row[col] != null ? BigInt(String(row[col])) : 0n;
-                                let diff = BigInt(val);
-                                values[i] = (current + diff).toString();
+                                let current = row && row[col] != null ? Number(String(row[col])) : 0;
+                                if (isNaN(current)) current = 0;
+                                let diff = Number(val);
+                                if (isNaN(diff)) diff = 0;
+                                const newVal = current + diff;
+                                values[i] = String(newVal);
                                 if (debugMode) console.log(`[sqlite3][DEBUG] Arithmetic mode for "${col}": current=${current}, diff=${diff}, newValue=${values[i]}`);
                             }
                         }
