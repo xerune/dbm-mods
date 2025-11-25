@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "4.0.1",
+        actionVersion: "4.1.0",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -931,7 +931,8 @@ module.exports = {
                     let val2 = data.checkvarValue;
                     if (compare !== 6) val2 = this.evalIfPossible(val2, cache);
                     if (val2 === "true") val2 = true;
-                    if (val2 === "false") val2 = false;
+                    else if (val2 === "false") val2 = false;
+                    else if (typeof val2 === 'string' && val2.trim().toLowerCase() === 'null') val2 = null;
                     let result = false;
                     let val1;
                     if (debugMode) console.log('[sqlite3] CHECKVAR operation entered.', {
@@ -981,9 +982,9 @@ module.exports = {
                                 else resolve(row);
                             });
                         });
-                        val1 = row ? String(row[getColumn]) : undefined;
+                        val1 = row ? String(row[getColumn]) : null;
                     } else {
-                        val1 = undefined;
+                        val1 = null;
                     }
                     if ((val2 === undefined || val2 === null || val2 === '') && data.storage) {
                         const missingMsg = `[sqlite3] CHECKVAR: Brak danych w val2`;
@@ -992,7 +993,7 @@ module.exports = {
                     }
                     switch (compare) {
                         case 0: // exists
-                            result = val1 !== undefined && val1 !== null;
+                            result = val1 !== null;
                             break;
 
                         case 1: // ==
@@ -1460,11 +1461,11 @@ module.exports = {
                         const columnToCheck = columns && columns.length > 0 ? columns[0] : null;
 
                         if (!columnToCheck) {
-                            if (debugMode) console.log('[DEBUG] No columnToStore provided in columns array, returning Brak danych');
-                            output = 'Brak danych';
+                            if (debugMode) console.log('[DEBUG] No columnToStore provided in columns array, returning null');
+                            output = null;
                         } else if (!values || values.length === 0 || values[0].trim() === '') {
-                            if (debugMode) console.log('[DEBUG] No value provided in values array, returning Brak danych');
-                            output = 'Brak danych';
+                            if (debugMode) console.log('[DEBUG] No value provided in values array, returning null');
+                            output = null;
                         } else {
                             const valueToCheck = String(values[0]).trim();
                             const sql = `SELECT CAST(${quoteId(getColumn)} AS TEXT) AS ${quoteId(getColumn)} FROM "${tableName.replace('.sqlite','')}" WHERE ${quoteId(columnToCheck)} = ? COLLATE BINARY`;
@@ -1475,13 +1476,13 @@ module.exports = {
                                 db.get(sql, [valueToCheck], (err, row) => {
                                     if (err) {
                                         console.error('[sqlite3] STORE GET ERROR:', err);
-                                        resolve('Brak danych');
+                                        resolve(null);
                                     } else if (!row) {
                                         if (debugMode) console.log(`[DEBUG] No row found in column "${columnToCheck}" for value "${valueToCheck}"`);
-                                        resolve('Brak danych');
+                                        resolve(null);
                                     } else {
                                         if (debugMode) console.log(`[DEBUG] Row found:`, row);
-                                        resolve(row[getColumn] !== undefined ? String(row[getColumn]) : 'Brak danych');
+                                        resolve(row[getColumn] != null ? String(row[getColumn]) : null);
                                     }
                                 });
                             });
@@ -1496,7 +1497,7 @@ module.exports = {
                                     console.error('[sqlite3] STORE GET RECORD ERROR:', err);
                                     reject(err);
                                 } else {
-                                    resolve(row || 'Brak danych');
+                                    resolve(row || null);
                                 }
                             });
                         });
@@ -1610,7 +1611,7 @@ module.exports = {
                                 }
                             }
                         }
-                        output = found !== null && found !== undefined ? found : 'Brak danych';
+                        output = found != null ? found : null;
                         if (debugMode) console.log('[sqlite3] search output:', output);
                     }
                 } else {
