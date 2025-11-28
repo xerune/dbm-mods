@@ -40,11 +40,11 @@
     "folder": "actions"
   },
   "[VX]SQLite_DB.js": {
-    "version": "4.1.1",
+    "version": "4.1.2",
     "author": "xerune",
     "createdDate": "18.09.2025 09:23",
-    "updateDate": "28.11.2025 11:02",
-    "previousVersion": "4.1.0",
+    "updateDate": "28.11.2025 15:49",
+    "previousVersion": "4.1.1",
     "folder": "actions"
   },
   "[VX]channel_restriction.js": {
