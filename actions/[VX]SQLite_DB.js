@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "4.1.1",
+        actionVersion: "4.1.2",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -943,7 +943,27 @@ module.exports = {
                         compare,
                         val2: data.checkvarValue
                     });
-                    if (conditionColumn && getColumn && conditionValue) {
+                    if (getColumn && (!conditionColumn || String(conditionColumn).trim() === '') && (!conditionValue || String(conditionValue).trim() === '')) {
+                        const tableNoExt = tableName.replace('.sqlite','');
+                        try {
+                            const sqlAny = `SELECT COUNT(*) as cnt FROM "${tableNoExt}" WHERE ${quoteId(getColumn)} IS NOT NULL AND ${quoteId(getColumn)} != ''`;
+                            if (debugMode) console.log('[sqlite3] CHECKVAR (any-in-column) SQL:', sqlAny);
+                            const anyRow = await new Promise((resolve, reject) => {
+                                db.get(sqlAny, [], (err, row) => {
+                                    if (err) reject(err);
+                                    else resolve(row);
+                                });
+                            });
+                            const anyCount = anyRow && anyRow.cnt ? Number(anyRow.cnt) : 0;
+                            const anyResult = anyCount > 0;
+                            if (debugMode) console.log(`[sqlite3] CHECKVAR any-in-column result for "${getColumn}":`, anyCount);
+                            this.executeResults(anyResult, data?.branch ?? data, cache);
+                            return;
+                        } catch (err) {
+                            if (debugMode) console.error('[sqlite3] CHECKVAR any-in-column ERROR:', err);
+                            val1 = null;
+                        }
+                    } else if (conditionColumn && getColumn && conditionValue) {
                         const tableNoExt = tableName.replace('.sqlite','');
                         const pragmaSql = `PRAGMA table_info(\"${tableNoExt}\")`;
                         const columnsInfo = await new Promise((resolve, reject) => {
@@ -1117,6 +1137,7 @@ module.exports = {
                     }
                     this.executeResults(result, data?.branch ?? data, cache);
             return;
+            // end checkvar
             } else if (dboperation === 'count') {
                 if (debugMode) console.log('[sqlite3] OPERATION: count');
                     if (debugMode) console.log('[sqlite3] COUNT operation entered. countColumn:', countColumn);
