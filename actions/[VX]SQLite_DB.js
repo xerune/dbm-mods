@@ -4,7 +4,7 @@ module.exports = {
     section: '# VX - Utilities',
     meta: {
         version: "3.2.0",
-        actionVersion: "4.1.0",
+        actionVersion: "4.1.1",
         author: "xerune",
         authorUrl: "https://github.com/vxe3D/dbm-mods",
         downloadUrl: "https://github.com/vxe3D/dbm-mods",
@@ -159,7 +159,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">⚠️ <u>W razie problemów...</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>vxed_</b>)</li>
+                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>xer.une</b>)</li>
                                 </ul>
                             </div>
                             </div>
@@ -168,7 +168,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">🚨 <u>Znalazłeś błąd?</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>vxed_</b></u> - zazwyczaj odpowiadam do godziny.</li>
+                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>xer.une</b></u> - zazwyczaj odpowiadam do godziny.</li>
                                 </ul>
                             </div>
                             </div>
@@ -320,7 +320,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">⚠️ <u>W razie problemów...</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>vxed_</b>)</li>
+                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>xer.une</b>)</li>
                                 </ul>
                             </div>
                             </div>
@@ -329,7 +329,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">🚨 <u>Znalazłeś błąd?</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>vxed_</b></u> - zazwyczaj odpowiadam do godziny.</li>
+                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>xer.une</b></u> - zazwyczaj odpowiadam do godziny.</li>
                                 </ul>
                             </div>
                             </div>
@@ -379,7 +379,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">⚠️ <u>W razie problemów...</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>vxed_</b>)</li>
+                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>xer.une</b>)</li>
                                 </ul>
                             </div>
                             </div>
@@ -388,7 +388,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">🚨 <u>Znalazłeś błąd?</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>vxed_</b></u> - zazwyczaj odpowiadam do godziny.</li>
+                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>xer.une</b></u> - zazwyczaj odpowiadam do godziny.</li>
                                 </ul>
                             </div>
                             </div>
@@ -414,7 +414,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">📖 <u>Column(s) to match</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>W tym polu zamieszczasz kolumnę z której ma usunąć dane [np. ID]</li>
+                                <li>W tym polu zamieszczasz kolumnę z której ma usunąć dane [np. ID] lub jeśli chcesz usunąć wszystkie dane użytkownikom to wpisz tylko [all] tutaj, w inne pola nic nie musisz wprowadzać.</li>
                                 </ul>
                             </div>
                             </div>
@@ -433,16 +433,17 @@ module.exports = {
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
                                 <li>A tutaj zamieszczasz którą kolumnę ma usunąć danemu użytkownikowi [np. Age] - gdy wskażesz "<b>Age</b>" to wtedy usunie tylko dane z tej kolumny, gdy nie wskażesz nic - usunie ci cały wynik z "<b>Value(s) to match</b>"</li>
+                                <br></br>
+                                <li>Jeśli chcesz usunąć dane wszystkim użytkownikom to w "<b>Column(s) to match</b>" wpisz <u>[all]</u> a tutaj możesz wprowadzić którą kolumnę chcesz wyczyścić</li>
                                 </ul>
                             </div>
                             </div>
-                            <br><br>
                             <!-- Trzecie okienko -->
-                            <div style="background-color:rgba(0, 0, 0, 0.41); border: 2px solid rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 5px; margin-bottom: 10px; margin-top: 170px;">
+                            <div style="background-color:rgba(0, 0, 0, 0.41); border: 2px solid rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 5px; margin-bottom: 10px; margin-top: 85px;">
                             <b><span style="font-size: 15px;">⚠️ <u>W razie problemów...</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>vxed_</b>)</li>
+                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>xer.une</b>)</li>
                                 </ul>
                             </div>
                             </div>
@@ -451,7 +452,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">🚨 <u>Znalazłeś błąd?</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>vxed_</b></u> - zazwyczaj odpowiadam do godziny.</li>
+                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>xer.une</b></u> - zazwyczaj odpowiadam do godziny.</li>
                                 </ul>
                             </div>
                             </div>
@@ -459,8 +460,8 @@ module.exports = {
                       </help-icon>
                     </span>
                     <a href="https://github.com/sqlitebrowser/sqlitebrowser/releases/download/v3.13.1/DB.Browser.for.SQLite-v3.13.1-win64.msi" target="_blank" style="color:#4ea1ff;cursor:pointer;text-decoration:underline;font-weight:bold;margin-left: 10px;">Polecany program do DB</a>
-                    <input id="deleteCollection" class="round" type="text" placeholder="ex. Age,Name">
-                    <span class="dbmininputlabel" style="margin-top: 4px; display: inline-block;">Value(s) to match</span>
+                    <input id="deleteCollection" class="round" type="text" placeholder="ex. Age,Name or [all]">
+                    <span class="dbminputlabel" style="margin-top: 4px; display: inline-block;">Value(s) to match</span>
                     <input id="deleteKey" class="round" type="text" placeholder="ex. 1,20,Test">
                     <hr class="subtlebar" style="margin-top: 8px; margin-bottom: 4px; width: 100%;">
                     <span class="dbminputlabel" style="margin-top: 4px; display: inline-block;">Column(s) to clear (optional)</span>
@@ -504,7 +505,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">⚠️ <u>W razie problemów...</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>vxed_</b>)</li>
+                                <li>Skontaktuj się ze mną na Discordzie <u>DBM Polska</u> lub w <u>wiadomości prywatnej</u> (<b>xer.une</b>)</li>
                                 </ul>
                             </div>
                             </div>
@@ -513,7 +514,7 @@ module.exports = {
                             <b><span style="font-size: 15px;">🚨 <u>Znalazłeś błąd?</span></b></u><br>
                             <div style="display: flex; gap: 20px;">  
                                 <ul style="flex: 1;  padding-left: 20px; margin: 0;">
-                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>vxed_</b></u> - zazwyczaj odpowiadam do godziny.</li>
+                                <li>Zgłoś problem na Discordzie w wiadomości prywatnej <b><u>xer.une</b></u> - zazwyczaj odpowiadam do godziny.</li>
                                 </ul>
                             </div>
                             </div>
@@ -1519,13 +1520,20 @@ module.exports = {
             // end store
             } else if (dboperation === 'delete') {
                 if (debugMode) console.log('[sqlite3] OPERATION: delete');
-                    if (debugMode) console.log('[sqlite3] DELETE operation entered.', {
-                        columns,
-                        values,
-                        columnsToClear
-                    });
-                    if (columnsToClear.length > 0 && columns.length === 0) {
-                        if (debugMode) console.log('[sqlite3] DELETE: Clear all columns', { columnsToClear });
+                if (debugMode) console.log('[sqlite3] DELETE operation entered.', {
+                    columns,
+                    values,
+                    columnsToClear
+                });
+
+                // Special token: if `deleteCollection` contains exactly "[all]",
+                // ignore `deleteKey` and operate on all rows.
+                const isAllToken = columns.length === 1 && columns[0] === '[all]';
+
+                if (isAllToken) {
+                    // If columnsToClear provided -> set those columns to NULL for ALL rows
+                    if (columnsToClear.length > 0) {
+                        if (debugMode) console.log('[sqlite3] DELETE: [all] - clear specified columns for all rows', { columnsToClear });
                         const setClause = columnsToClear.map(col => `${quoteId(col)}=NULL`).join(', ');
                         const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause}`;
                         output = await new Promise((resolve, reject) => {
@@ -1538,38 +1546,68 @@ module.exports = {
                                 }
                             });
                         });
-                    } else if (columns.length > 0 && values.length > 0) {
-                        if (debugMode) console.log('[sqlite3] DELETE: With where', { columns, values, columnsToClear });
-                        const where = columns.map((col, i) => `${quoteId(col)}=?`).join(' AND ');
-                        if (columnsToClear.length > 0) {
-                            if (debugMode) console.log('[sqlite3] DELETE: Update set NULL with where', { setClause, where });
-                            const setClause = columnsToClear.map(col => `${quoteId(col)}=NULL`).join(', ');
-                            const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${where}`;
-                            output = await new Promise((resolve, reject) => {
-                                db.run(sql, values, function(err) {
-                                    if (err) {
-                                        console.error('[sqlite3] CLEAR ERROR:', err);
-                                        reject(err);
-                                    } else {
-                                        resolve({ changes: this.changes });
-                                    }
-                                });
+                    } else {
+                        // No clear-column specified -> delete all rows
+                        if (debugMode) console.log('[sqlite3] DELETE: [all] - delete all rows');
+                        const sql = `DELETE FROM "${tableName.replace('.sqlite','')}"`;
+                        output = await new Promise((resolve, reject) => {
+                            db.run(sql, [], function(err) {
+                                if (err) {
+                                    console.error('[sqlite3] DELETE ALL ERROR:', err);
+                                    reject(err);
+                                } else {
+                                    resolve({ changes: this.changes });
+                                }
                             });
-                        } else {
-                            if (debugMode) console.log('[sqlite3] DELETE: Delete with where', { where });
-                            const sql = `DELETE FROM "${tableName.replace('.sqlite','')}" WHERE ${where}`;
-                            output = await new Promise((resolve, reject) => {
-                                db.run(sql, values, function(err) {
-                                    if (err) {
-                                        console.error('[sqlite3] DELETE ERROR:', err);
-                                        reject(err);
-                                    } else {
-                                        resolve({ changes: this.changes });
-                                    }
-                                });
-                            });
-                        }
+                        });
                     }
+
+                } else if (columnsToClear.length > 0 && columns.length === 0) {
+                    if (debugMode) console.log('[sqlite3] DELETE: Clear all columns', { columnsToClear });
+                    const setClause = columnsToClear.map(col => `${quoteId(col)}=NULL`).join(', ');
+                    const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause}`;
+                    output = await new Promise((resolve, reject) => {
+                        db.run(sql, [], function(err) {
+                            if (err) {
+                                console.error('[sqlite3] CLEAR ALL ERROR:', err);
+                                reject(err);
+                            } else {
+                                resolve({ changes: this.changes });
+                            }
+                        });
+                    });
+                } else if (columns.length > 0 && values.length > 0) {
+                    if (debugMode) console.log('[sqlite3] DELETE: With where', { columns, values, columnsToClear });
+                    const where = columns.map((col, i) => `${quoteId(col)}=?`).join(' AND ');
+                    if (columnsToClear.length > 0) {
+                        if (debugMode) console.log('[sqlite3] DELETE: Update set NULL with where', { where, columnsToClear });
+                        const setClause = columnsToClear.map(col => `${quoteId(col)}=NULL`).join(', ');
+                        const sql = `UPDATE "${tableName.replace('.sqlite','')}" SET ${setClause} WHERE ${where}`;
+                        output = await new Promise((resolve, reject) => {
+                            db.run(sql, values, function(err) {
+                                if (err) {
+                                    console.error('[sqlite3] CLEAR ERROR:', err);
+                                    reject(err);
+                                } else {
+                                    resolve({ changes: this.changes });
+                                }
+                            });
+                        });
+                    } else {
+                        if (debugMode) console.log('[sqlite3] DELETE: Delete with where', { where });
+                        const sql = `DELETE FROM "${tableName.replace('.sqlite','')}" WHERE ${where}`;
+                        output = await new Promise((resolve, reject) => {
+                            db.run(sql, values, function(err) {
+                                if (err) {
+                                    console.error('[sqlite3] DELETE ERROR:', err);
+                                    reject(err);
+                                } else {
+                                    resolve({ changes: this.changes });
+                                }
+                            });
+                        });
+                    }
+                }
             // end delete
             } else if (dboperation === 'search') {
                 if (debugMode) console.log('[sqlite3] OPERATION: search');
